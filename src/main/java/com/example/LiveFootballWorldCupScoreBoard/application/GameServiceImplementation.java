@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +31,11 @@ class GameServiceImplementation implements GameService {
     }
 
     public List<Game> getScoreBoard() {
-        return scoreBoard;
+        return scoreBoard.stream().sorted(Comparator.comparing(Game::getTotalScore)
+                        .reversed()
+                        .thenComparing(Game::getStartTime)
+                        .reversed())
+                .toList();
     }
 
     public Game findGameById(UUID gameId) {

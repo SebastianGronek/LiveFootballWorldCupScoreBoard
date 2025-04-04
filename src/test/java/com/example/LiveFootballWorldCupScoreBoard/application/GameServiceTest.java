@@ -15,7 +15,7 @@ class GameServiceTest {
 
     @BeforeEach
     public void cleanBoard() {
-        gameService.getScoreBoard().clear();
+//        gameService.getScoreBoard().clear();
     }
 
     @BeforeEach
@@ -37,16 +37,16 @@ class GameServiceTest {
         UUID game4Id = currentScoreBoard.get(3).getGameId();
         UUID game5Id = currentScoreBoard.get(4).getGameId();
         //when
-        List<Game> scoreBoardResult = gameService.getScoreBoard();
         gameService.updateScore(game3Id, 1, 2);
-        gameService.updateScore(game5Id, 3, 0);
+        gameService.updateScore(game2Id, 3, 0);
+        List<Game> scoreBoardResult = gameService.getScoreBoard();
         //then
         assertThat(scoreBoardResult).hasSize(5);
         assertThat(scoreBoardResult).containsExactly(
-                gameService.findGameById(game5Id),
+                gameService.findGameById(game2Id),
                 gameService.findGameById(game3Id),
                 gameService.findGameById(game4Id),
-                gameService.findGameById(game2Id),
+                gameService.findGameById(game5Id),
                 gameService.findGameById(game1Id)
         );
     }

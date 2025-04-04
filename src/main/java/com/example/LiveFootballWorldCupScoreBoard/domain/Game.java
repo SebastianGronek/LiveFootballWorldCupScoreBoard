@@ -1,8 +1,5 @@
 package com.example.LiveFootballWorldCupScoreBoard.domain;
 
-import lombok.Getter;
-import lombok.ToString;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -12,19 +9,28 @@ public class Game {
     private final Team awayTeam;
     private int homeScore;
     private int awayScore;
+    private int totalScore;
     //Maybe use instant
     private final LocalDateTime startTime;
 
-  public   UUID getGameId() {
+    public UUID getGameId() {
         return gameId;
     }
 
-   public Team getAwayTeam() {
+    public Team getAwayTeam() {
         return awayTeam;
     }
 
-  public   int getHomeScore() {
+    public int getHomeScore() {
         return homeScore;
+    }
+
+    public int getTotalScore() {
+        return totalScore;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     @Override
@@ -45,6 +51,7 @@ public class Game {
         this.gameId = UUID.randomUUID();
         this.homeScore = 0;
         this.awayScore = 0;
+        this.totalScore = 0;
         this.startTime = LocalDateTime.now();
     }
 
@@ -54,5 +61,6 @@ public class Game {
         }
         this.homeScore = updatedHomeScore;
         this.awayScore = updatedAwayScore;
+        this.totalScore = updatedHomeScore + updatedAwayScore;
     }
 }
