@@ -18,7 +18,7 @@ class GameServiceImplementation implements GameService {
     public UUID startGame(Team homeTeam, Team awayTeam) {
         Game game = new Game(homeTeam, awayTeam);
         scoreBoard.add(game);
-        return game.getGameId();
+        return game.gameId();
     }
 
     public void updateScore(UUID gameId, int homeScore, int awayScore) {
@@ -31,16 +31,21 @@ class GameServiceImplementation implements GameService {
     }
 
     public List<Game> getScoreBoard() {
-        return scoreBoard.stream().sorted(Comparator.comparing(Game::getTotalScore)
+        return scoreBoard.stream().sorted(Comparator.comparing((game1, game2)-> {
+                            if (game1.totalScore().get() == game2.totalScore().get()) {
+                                return 0;
+                            }
+                            return game1.totalScore().get() > game2.totalScore().get() ? -1 : 1;
+                        })
                         .reversed()
-                        .thenComparing(Game::getStartTime)
+                        .thenComparing(Game::startTime)
                         .reversed())
                 .toList();
     }
 
     public Game findGameById(UUID gameId) {
         return scoreBoard.stream()
-                .filter(game -> game.getGameId().equals(gameId))
+                .filter(game -> game.gameId().equals(gameId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
     }
