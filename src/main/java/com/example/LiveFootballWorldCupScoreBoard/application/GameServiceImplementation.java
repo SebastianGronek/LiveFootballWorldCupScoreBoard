@@ -2,11 +2,15 @@ package com.example.LiveFootballWorldCupScoreBoard.application;
 
 import com.example.LiveFootballWorldCupScoreBoard.domain.Game;
 import com.example.LiveFootballWorldCupScoreBoard.domain.Team;
+import lombok.Getter;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Service
+@Getter
 class GameServiceImplementation implements GameService {
     private List<Game> scoreBoard = new ArrayList<>();
 
@@ -26,10 +30,10 @@ class GameServiceImplementation implements GameService {
     }
 
     public List<Game> getScoreBoard() {
-        return scoreBoard.stream().sorted((game1, game2)->game1.getStartTime().compareTo(game2.getStartTime())).toList();
+        return scoreBoard;
     }
 
-    private Game findGameById(UUID gameId) {
+    public Game findGameById(UUID gameId) {
         return scoreBoard.stream()
                 .filter(game -> game.getGameId().equals(gameId))
                 .findFirst()

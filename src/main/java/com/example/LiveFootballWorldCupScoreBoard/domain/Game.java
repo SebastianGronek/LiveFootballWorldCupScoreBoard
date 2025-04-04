@@ -5,15 +5,26 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Getter
 public class Game {
-    private UUID gameId;
-    private Team homeTeam;
-    private Team awayTeam;
+    private final UUID gameId;
+    private final Team homeTeam;
+    private final Team awayTeam;
     private int homeScore;
     private int awayScore;
     //Maybe use instant
-    private LocalDateTime startTime;
+    private final LocalDateTime startTime;
+
+  public   UUID getGameId() {
+        return gameId;
+    }
+
+   public Team getAwayTeam() {
+        return awayTeam;
+    }
+
+  public   int getHomeScore() {
+        return homeScore;
+    }
 
     public Game(Team homeTeam, Team awayTeam) {
         this.homeTeam = homeTeam;

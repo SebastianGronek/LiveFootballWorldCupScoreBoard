@@ -1,5 +1,4 @@
 package com.example.LiveFootballWorldCupScoreBoard.domain;
 
-public class Team {
-    private String name;
+public record Team(String name) {
 }
