@@ -1,6 +1,7 @@
 package com.example.LiveFootballWorldCupScoreBoard.domain;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -24,6 +25,18 @@ public class Game {
 
   public   int getHomeScore() {
         return homeScore;
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "gameId=" + gameId +
+                ", homeTeam=" + homeTeam +
+                ", awayTeam=" + awayTeam +
+                ", homeScore=" + homeScore +
+                ", awayScore=" + awayScore +
+                ", startTime=" + startTime +
+                '}';
     }
 
     public Game(Team homeTeam, Team awayTeam) {
