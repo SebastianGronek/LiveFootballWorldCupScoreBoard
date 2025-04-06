@@ -15,7 +15,7 @@ class GameServiceTest {
 
     @BeforeEach
     public void cleanBoard() {
-//        gameService.getScoreBoard().clear();
+        gameService.clearBoard();
     }
 
     @BeforeEach
@@ -31,34 +31,36 @@ class GameServiceTest {
     void shouldGetScoreBoard() {
         //given
         List<Game> currentScoreBoard = gameService.getScoreBoard();
-        UUID game1Id = currentScoreBoard.get(0).gameId();
-        UUID game2Id = currentScoreBoard.get(1).gameId();
+        System.out.println(gameService.getScoreBoard());
+        UUID game1Id = currentScoreBoard.get(4).gameId();
+        UUID game2Id = currentScoreBoard.get(3).gameId();
         UUID game3Id = currentScoreBoard.get(2).gameId();
-        UUID game4Id = currentScoreBoard.get(3).gameId();
-        UUID game5Id = currentScoreBoard.get(4).gameId();
+        UUID game4Id = currentScoreBoard.get(1).gameId();
+        UUID game5Id = currentScoreBoard.get(0).gameId();
         //when
-        gameService.updateScore(game3Id, 1, 2);
         gameService.updateScore(game2Id, 3, 0);
+        gameService.updateScore(game3Id, 1, 2);
         List<Game> scoreBoardResult = gameService.getScoreBoard();
         //then
         assertThat(scoreBoardResult).hasSize(5);
         assertThat(scoreBoardResult).containsExactly(
-                gameService.findGameById(game2Id),
                 gameService.findGameById(game3Id),
-                gameService.findGameById(game4Id),
+                gameService.findGameById(game2Id),
                 gameService.findGameById(game5Id),
+                gameService.findGameById(game4Id),
                 gameService.findGameById(game1Id)
         );
+        System.out.println(gameService.getScoreBoard());
     }
 
     @Test
     void shouldUpdateScoreBoard() {
         //given
         Game game = gameService.getScoreBoard().get(3);
-        UUID gameId = game.getGameId();
+        UUID gameId = game.gameId();
         //when
         gameService.updateScore(gameId, 2, 3);
         //then
-        assertThat(gameService.findGameById(gameId).getHomeScore()).isEqualTo(2);
+        assertThat(gameService.findGameById(gameId).homeScore()).isEqualTo(2);
     }
 }
