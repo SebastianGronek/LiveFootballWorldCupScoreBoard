@@ -28,10 +28,9 @@ class GameServiceTest {
     }
 
     @Test
-    void shouldGetScoreBoard() {
+    void shouldGetScoreBoardSorted() {
         //given
         List<Game> currentScoreBoard = gameService.getScoreBoard();
-        System.out.println(gameService.getScoreBoard());
         UUID game1Id = currentScoreBoard.get(4).gameId();
         UUID game2Id = currentScoreBoard.get(3).gameId();
         UUID game3Id = currentScoreBoard.get(2).gameId();
@@ -50,7 +49,6 @@ class GameServiceTest {
                 gameService.findGameById(game4Id),
                 gameService.findGameById(game1Id)
         );
-        System.out.println(gameService.getScoreBoard());
     }
 
     @Test
@@ -61,6 +59,18 @@ class GameServiceTest {
         //when
         gameService.updateScore(gameId, 2, 3);
         //then
-        assertThat(gameService.findGameById(gameId).homeScore()).isEqualTo(2);
+        assertThat(gameService.findGameById(gameId).homeScore().getPlain()).isEqualTo(2);
+    }
+
+    @Test
+    void shouldRemoveMatchFromScoreBoard() {
+        //given
+        List<Game> currentScoreBoard = gameService.getScoreBoard();
+        UUID game1Id = currentScoreBoard.get(4).gameId();
+        //when
+        gameService.endGame(game1Id);
+        List<Game> resultScoreBoard = gameService.getScoreBoard();
+        //then
+        assertThat(resultScoreBoard).hasSize(4);
     }
 }
