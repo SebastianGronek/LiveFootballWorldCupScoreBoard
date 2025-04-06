@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GameServiceTest {
     private GameService gameService = new GameServiceImplementation();
+    List<Game> currentScoreBoard = gameService.getScoreBoard();
 
     @BeforeEach
     public void cleanBoard() {
@@ -49,6 +51,15 @@ class GameServiceTest {
                 gameService.findGameById(game4Id),
                 gameService.findGameById(game1Id)
         );
+        //and then
+        gameService.updateScore(game3Id, 1, 1);
+        assertThat(scoreBoardResult).containsExactly(
+                gameService.findGameById(game2Id),
+                gameService.findGameById(game3Id),
+                gameService.findGameById(game5Id),
+                gameService.findGameById(game4Id),
+                gameService.findGameById(game1Id)
+        );
     }
 
     @Test
@@ -72,5 +83,27 @@ class GameServiceTest {
         List<Game> resultScoreBoard = gameService.getScoreBoard();
         //then
         assertThat(resultScoreBoard).hasSize(4);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenGameNotFound() {
+        //given
+        UUID gameId = UUID.randomUUID();
+        //when and then
+        assertThatThrownBy(() -> gameService.findGameById(gameId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Game not found");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenScoreUpdatedToValueBelowZero() {
+        //given
+        List<Game> currentScoreBoard = gameService.getScoreBoard();
+        UUID gameId = currentScoreBoard.get(3).gameId();
+        gameService.updateScore(gameId, 0, -1);
+        // then
+        assertThatThrownBy(() -> gameService.findGameById(gameId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Score cannot be negative");
     }
 }

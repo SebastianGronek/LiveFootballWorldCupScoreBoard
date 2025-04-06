@@ -14,9 +14,9 @@ import java.util.UUID;
 @Getter
 class GameServiceImplementation implements GameService {
     private List<Game> scoreBoard = new ArrayList<>();
-    Comparator<Game> gameComparatorByScore = Comparator.comparing(g -> g.totalScore().get(), Integer::compare);
-    Comparator<Game> gameComparatorByTimeDesc = Comparator.comparing(Game::startTime).reversed();
-    Comparator<Game> gameComparatorByScoreAndTime = gameComparatorByScore.reversed()
+    private final Comparator<Game> gameComparatorByScore = Comparator.comparing(g -> g.totalScore().get(), Integer::compare);
+    private final Comparator<Game> gameComparatorByTimeDesc = Comparator.comparing(Game::startTime).reversed();
+    private final Comparator<Game> gameComparatorByScoreAndTime = gameComparatorByScore.reversed()
             .thenComparing(gameComparatorByTimeDesc);
 
     public UUID startGame(Team homeTeam, Team awayTeam) {
