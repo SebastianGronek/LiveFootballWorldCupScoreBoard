@@ -16,4 +16,6 @@ public interface GameService {
     List<Game> getScoreBoard();
 
     Game findGameById(UUID gameId);
+
+    void clearBoard();
 }

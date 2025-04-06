@@ -14,11 +14,15 @@ import java.util.UUID;
 @Getter
 class GameServiceImplementation implements GameService {
     private List<Game> scoreBoard = new ArrayList<>();
+    Comparator<Game> gameComparatorByScore = Comparator.comparing(g -> g.totalScore().get(), Integer::compare);
+    Comparator<Game> gameComparatorByTimeDesc = Comparator.comparing(Game::startTime).reversed();
+    Comparator<Game> gameComparatorByScoreAndTime = gameComparatorByScore.reversed()
+            .thenComparing(gameComparatorByTimeDesc);
 
     public UUID startGame(Team homeTeam, Team awayTeam) {
         Game game = new Game(homeTeam, awayTeam);
         scoreBoard.add(game);
-        return game.getGameId();
+        return game.gameId();
     }
 
     public void updateScore(UUID gameId, int homeScore, int awayScore) {
@@ -31,17 +35,18 @@ class GameServiceImplementation implements GameService {
     }
 
     public List<Game> getScoreBoard() {
-        return scoreBoard.stream().sorted(Comparator.comparing(Game::getTotalScore)
-                        .reversed()
-                        .thenComparing(Game::getStartTime)
-                        .reversed())
+        return scoreBoard.stream().sorted(gameComparatorByScoreAndTime)
                 .toList();
     }
 
     public Game findGameById(UUID gameId) {
         return scoreBoard.stream()
-                .filter(game -> game.getGameId().equals(gameId))
+                .filter(game -> game.gameId().equals(gameId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
+    }
+
+    public void clearBoard() {
+        scoreBoard.clear();
     }
 }

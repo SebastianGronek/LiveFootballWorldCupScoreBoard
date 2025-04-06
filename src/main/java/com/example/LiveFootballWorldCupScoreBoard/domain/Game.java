@@ -1,66 +1,29 @@
 package com.example.LiveFootballWorldCupScoreBoard.domain;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class Game {
-    private final UUID gameId;
-    private final Team homeTeam;
-    private final Team awayTeam;
-    private int homeScore;
-    private int awayScore;
-    private int totalScore;
-    //Maybe use instant
-    private final LocalDateTime startTime;
-
-    public UUID getGameId() {
-        return gameId;
-    }
-
-    public Team getAwayTeam() {
-        return awayTeam;
-    }
-
-    public int getHomeScore() {
-        return homeScore;
-    }
-
-    public int getTotalScore() {
-        return totalScore;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Game{" +
-                "gameId=" + gameId +
-                ", homeTeam=" + homeTeam +
-                ", awayTeam=" + awayTeam +
-                ", homeScore=" + homeScore +
-                ", awayScore=" + awayScore +
-                ", startTime=" + startTime +
-                '}';
-    }
+public record Game(
+        UUID gameId,
+        Team homeTeam,
+        Team awayTeam,
+        AtomicInteger homeScore,
+        AtomicInteger awayScore,
+        AtomicInteger totalScore,
+        Instant startTime) {
 
     public Game(Team homeTeam, Team awayTeam) {
-        this.homeTeam = homeTeam;
-        this.awayTeam = awayTeam;
-        this.gameId = UUID.randomUUID();
-        this.homeScore = 0;
-        this.awayScore = 0;
-        this.totalScore = 0;
-        this.startTime = LocalDateTime.now();
+        this(UUID.randomUUID(), homeTeam, awayTeam, new AtomicInteger(0), new AtomicInteger(0), new AtomicInteger(0), Instant.now());
     }
 
     public void updateScore(int updatedHomeScore, int updatedAwayScore) {
-        if (updatedHomeScore < homeScore || updatedAwayScore < awayScore) {
+        if (updatedHomeScore < homeScore.get() || updatedAwayScore < awayScore.get()) {
             throw new IllegalArgumentException("Scores cannot decrease");
         }
-        this.homeScore = updatedHomeScore;
-        this.awayScore = updatedAwayScore;
-        this.totalScore = updatedHomeScore + updatedAwayScore;
+        int updatedTotalScore = updatedAwayScore + updatedHomeScore;
+        this.homeScore.set(updatedHomeScore);
+        this.awayScore.set(updatedAwayScore);
+        this.totalScore.set(updatedTotalScore);
     }
 }
