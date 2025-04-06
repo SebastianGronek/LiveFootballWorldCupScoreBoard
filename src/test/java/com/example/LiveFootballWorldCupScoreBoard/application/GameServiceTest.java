@@ -53,6 +53,7 @@ class GameServiceTest {
         );
         //and then
         gameService.updateScore(game3Id, 1, 1);
+        scoreBoardResult = gameService.getScoreBoard();
         assertThat(scoreBoardResult).containsExactly(
                 gameService.findGameById(game2Id),
                 gameService.findGameById(game3Id),
@@ -100,10 +101,9 @@ class GameServiceTest {
         //given
         List<Game> currentScoreBoard = gameService.getScoreBoard();
         UUID gameId = currentScoreBoard.get(3).gameId();
-        gameService.updateScore(gameId, 0, -1);
         // then
-        assertThatThrownBy(() -> gameService.findGameById(gameId))
+        assertThatThrownBy(() -> gameService.updateScore(gameId, 0, -1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Score cannot be negative");
+                .hasMessageContaining("Scores cannot be negative");
     }
 }

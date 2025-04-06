@@ -18,8 +18,8 @@ public record Game(
     }
 
     public void updateScore(int updatedHomeScore, int updatedAwayScore) {
-        if (updatedHomeScore < homeScore.get() || updatedAwayScore < awayScore.get()) {
-            throw new IllegalArgumentException("Scores cannot decrease");
+        if (updatedHomeScore < 0 || updatedAwayScore < 0) {
+            throw new IllegalArgumentException("Scores cannot be negative");
         }
         int updatedTotalScore = updatedAwayScore + updatedHomeScore;
         this.homeScore.set(updatedHomeScore);
