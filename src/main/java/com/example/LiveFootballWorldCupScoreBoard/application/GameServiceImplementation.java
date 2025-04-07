@@ -2,7 +2,6 @@ package com.example.LiveFootballWorldCupScoreBoard.application;
 
 import com.example.LiveFootballWorldCupScoreBoard.domain.Game;
 import com.example.LiveFootballWorldCupScoreBoard.domain.Team;
-import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@Getter
 class GameServiceImplementation implements GameService {
     private List<Game> scoreBoard = new ArrayList<>();
     private final Comparator<Game> gameComparatorByScore = Comparator.comparing(g -> g.totalScore().get(), Integer::compare);
