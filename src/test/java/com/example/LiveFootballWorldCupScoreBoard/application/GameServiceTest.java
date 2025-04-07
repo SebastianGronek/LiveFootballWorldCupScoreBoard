@@ -13,7 +13,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GameServiceTest {
     private GameService gameService = new GameServiceImplementation();
-    List<Game> currentScoreBoard = gameService.getScoreBoard();
+
+    private UUID firstGameID;
+    private UUID secondGameID;
+    private UUID thirdGameID;
+    private UUID forthGameID;
+    private UUID fifthGameID;
 
     @BeforeEach
     public void cleanBoard() {
@@ -22,65 +27,57 @@ class GameServiceTest {
 
     @BeforeEach
     public void prepareInitialScoreBoard() {
-        gameService.startGame(new Team("Team A"), new Team("Team B"));
-        gameService.startGame(new Team("Team C"), new Team("Team D"));
-        gameService.startGame(new Team("Team E"), new Team("Team F"));
-        gameService.startGame(new Team("Team G"), new Team("Team H"));
-        gameService.startGame(new Team("Team I"), new Team("Team J"));
+        firstGameID = gameService.startGame(new Team("Team A"), new Team("Team B"));
+        secondGameID = gameService.startGame(new Team("Team C"), new Team("Team D"));
+        thirdGameID = gameService.startGame(new Team("Team E"), new Team("Team F"));
+        forthGameID = gameService.startGame(new Team("Team G"), new Team("Team H"));
+        fifthGameID = gameService.startGame(new Team("Team I"), new Team("Team J"));
     }
 
     @Test
     void shouldGetScoreBoardSorted() {
         //given
         List<Game> currentScoreBoard = gameService.getScoreBoard();
-        UUID game1Id = currentScoreBoard.get(4).gameId();
-        UUID game2Id = currentScoreBoard.get(3).gameId();
-        UUID game3Id = currentScoreBoard.get(2).gameId();
-        UUID game4Id = currentScoreBoard.get(1).gameId();
-        UUID game5Id = currentScoreBoard.get(0).gameId();
+
         //when
-        gameService.updateScore(game2Id, 3, 0);
-        gameService.updateScore(game3Id, 1, 2);
+        gameService.updateScore(secondGameID, 3, 0);
+        gameService.updateScore(thirdGameID, 1, 2);
         List<Game> scoreBoardResult = gameService.getScoreBoard();
         //then
         assertThat(scoreBoardResult).hasSize(5);
         assertThat(scoreBoardResult).containsExactly(
-                gameService.findGameById(game3Id),
-                gameService.findGameById(game2Id),
-                gameService.findGameById(game5Id),
-                gameService.findGameById(game4Id),
-                gameService.findGameById(game1Id)
+                gameService.findGameById(thirdGameID),
+                gameService.findGameById(secondGameID),
+                gameService.findGameById(fifthGameID),
+                gameService.findGameById(forthGameID),
+                gameService.findGameById(firstGameID)
         );
         //and then
-        gameService.updateScore(game3Id, 1, 1);
+        gameService.updateScore(thirdGameID, 1, 1);
         scoreBoardResult = gameService.getScoreBoard();
         assertThat(scoreBoardResult).containsExactly(
-                gameService.findGameById(game2Id),
-                gameService.findGameById(game3Id),
-                gameService.findGameById(game5Id),
-                gameService.findGameById(game4Id),
-                gameService.findGameById(game1Id)
+                gameService.findGameById(secondGameID),
+                gameService.findGameById(thirdGameID),
+                gameService.findGameById(fifthGameID),
+                gameService.findGameById(forthGameID),
+                gameService.findGameById(firstGameID)
         );
     }
 
     @Test
     void shouldUpdateScoreBoard() {
         //given
-        Game game = gameService.getScoreBoard().get(3);
-        UUID gameId = game.gameId();
         //when
-        gameService.updateScore(gameId, 2, 3);
+        gameService.updateScore(forthGameID, 2, 3);
         //then
-        assertThat(gameService.findGameById(gameId).homeScore().getPlain()).isEqualTo(2);
+        assertThat(gameService.findGameById(forthGameID).homeScore().getPlain()).isEqualTo(2);
     }
 
     @Test
     void shouldRemoveMatchFromScoreBoard() {
         //given
-        List<Game> currentScoreBoard = gameService.getScoreBoard();
-        UUID game1Id = currentScoreBoard.get(4).gameId();
         //when
-        gameService.endGame(game1Id);
+        gameService.endGame(firstGameID);
         List<Game> resultScoreBoard = gameService.getScoreBoard();
         //then
         assertThat(resultScoreBoard).hasSize(4);
@@ -89,9 +86,9 @@ class GameServiceTest {
     @Test
     void shouldThrowExceptionWhenGameNotFound() {
         //given
-        UUID gameId = UUID.randomUUID();
+        UUID randomId = UUID.randomUUID();
         //when and then
-        assertThatThrownBy(() -> gameService.findGameById(gameId))
+        assertThatThrownBy(() -> gameService.findGameById(randomId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Game not found");
     }
@@ -99,10 +96,8 @@ class GameServiceTest {
     @Test
     void shouldThrowExceptionWhenScoreUpdatedToValueBelowZero() {
         //given
-        List<Game> currentScoreBoard = gameService.getScoreBoard();
-        UUID gameId = currentScoreBoard.get(3).gameId();
-        // then
-        assertThatThrownBy(() -> gameService.updateScore(gameId, 0, -1))
+        //when and then
+        assertThatThrownBy(() -> gameService.updateScore(fifthGameID, 0, -1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Scores cannot be negative");
     }
