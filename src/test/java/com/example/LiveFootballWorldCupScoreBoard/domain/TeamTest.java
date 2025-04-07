@@ -13,6 +13,6 @@ class TeamTest {
         //when and then
         assertThatThrownBy(() -> new Team(teamName))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Team name cannot be null, and must be between 2 and 5 signs");
+                .hasMessageContaining("Team name cannot be null, and must be between 2 and 50 signs");
     }
 }
